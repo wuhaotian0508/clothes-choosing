@@ -1,0 +1,422 @@
+:root {
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #18201f;
+  background: #f5f7f3;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 14px;
+  color: #ffffff;
+  background: #1f5d52;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #164a42;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button.secondary {
+  color: #1f3531;
+  background: #dfe9e5;
+}
+
+button.secondary:hover {
+  background: #cfddd8;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 28px 20px;
+  color: #f9fbf8;
+  background: #1b2624;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #9fb7b0;
+  font-size: 0.78rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: 1.7rem;
+  line-height: 1.1;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 1.2rem;
+}
+
+h3 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.nav-list {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-list button {
+  justify-content: flex-start;
+  width: 100%;
+  color: #d9e4df;
+  background: transparent;
+}
+
+.nav-list button:hover,
+.nav-list button.active {
+  color: #12201d;
+  background: #dce9df;
+}
+
+.sidebar-stats {
+  display: grid;
+  gap: 8px;
+  color: #b5c8c0;
+  font-size: 0.86rem;
+}
+
+.workspace {
+  min-width: 0;
+  padding: 22px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  color: #53615e;
+  font-size: 0.9rem;
+}
+
+.view-grid,
+.today-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.panel,
+.item-card,
+.outfit-card {
+  border: 1px solid #d9dfd8;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgb(19 32 29 / 8%);
+}
+
+.panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.panel-heading,
+.outfit-header,
+.card-title,
+.button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-heading span,
+.outfit-header span {
+  color: #6b7471;
+  font-size: 0.86rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.compact-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr 0.7fr;
+  gap: 10px;
+}
+
+.stack {
+  display: grid;
+  gap: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  color: #43504d;
+  font-size: 0.85rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  border: 1px solid #cfd8d4;
+  border-radius: 8px;
+  padding: 10px 11px;
+  color: #17211f;
+  background: #fbfcfb;
+}
+
+.field textarea {
+  min-height: 78px;
+  resize: vertical;
+}
+
+.file-drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 132px;
+  border: 1px dashed #9fb2ac;
+  border-radius: 8px;
+  color: #65736f;
+  background: #f7faf8;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.file-drop.wide {
+  min-height: 210px;
+}
+
+.file-drop input,
+.hidden {
+  display: none;
+}
+
+.file-drop img,
+.item-card > img,
+.outfit-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.item-grid,
+.recommendation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.item-card {
+  display: grid;
+  grid-template-rows: 180px minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.item-card > div:last-child {
+  padding: 12px;
+}
+
+.item-card p {
+  color: #65736f;
+  font-size: 0.86rem;
+}
+
+.icon-button {
+  width: 32px;
+  min-height: 32px;
+  padding: 0;
+  color: #6a3333;
+  background: #f2dedb;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tags span {
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #35413d;
+  background: #edf2ee;
+  font-size: 0.78rem;
+}
+
+.weather-strip {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid #d8e1dd;
+  border-radius: 8px;
+  padding: 12px;
+  background: #f7faf8;
+}
+
+.weather-strip div {
+  display: grid;
+  gap: 3px;
+}
+
+.weather-strip span {
+  color: #62706c;
+  font-size: 0.86rem;
+}
+
+.outfit-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.outfit-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.outfit-item {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  color: #5a6763;
+  font-size: 0.82rem;
+}
+
+.outfit-item img,
+.image-placeholder {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: #e7ece8;
+}
+
+.image-placeholder {
+  display: grid;
+  place-items: center;
+  color: #73817c;
+}
+
+.outfit-item strong {
+  color: #18201f;
+  overflow-wrap: anywhere;
+}
+
+.reason-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: #4c5b57;
+  font-size: 0.88rem;
+}
+
+.reason-list .warning {
+  color: #995d18;
+}
+
+.settings-panel {
+  max-width: 620px;
+}
+
+.settings-note {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid #e2e7e4;
+  padding-top: 14px;
+  color: #5f6d69;
+  font-size: 0.9rem;
+}
+
+.cloud-auth-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(3, max-content);
+  gap: 10px;
+  align-items: end;
+}
+
+.compact-note {
+  padding-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .app-shell,
+  .view-grid,
+  .today-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    min-height: auto;
+  }
+
+  .nav-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .workspace {
+    padding: 14px;
+  }
+
+  .form-grid,
+  .compact-grid,
+  .cloud-auth-row,
+  .button-row,
+  .topbar {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
