@@ -139,14 +139,26 @@ export default function App() {
     return <AuthGate />;
   }
 
+  const viewTitles: Record<View, string> = {
+    today: "Today",
+    wardrobe: "Wardrobe",
+    likes: "Style references",
+    settings: "Settings",
+    admin: "Admin workspace"
+  };
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
-        <div>
-          <p className="eyebrow">Local Outfit Assistant</p>
-          <h1>Today&apos;s wardrobe</h1>
+        <div className="sidebar-top">
+          <div className="brand-lockup">
+            <span className="brand-mark" aria-hidden="true"><i /></span>
+            <p className="eyebrow">Local Outfit Assistant</p>
+          </div>
+          <h1>Your wardrobe,<br />considered.</h1>
+          <p className="sidebar-copy">Build a closet that makes getting dressed feel easier.</p>
         </div>
-        <nav className="nav-list">
+        <nav className="nav-list" aria-label="Primary navigation">
           <button className={view === "today" ? "active" : ""} onClick={() => setView("today")}>
             <CalendarDays size={18} /> Today
           </button>
@@ -165,18 +177,24 @@ export default function App() {
             </button>
           )}
         </nav>
-        <div className="sidebar-stats">
-          <span>{wardrobe.length} items</span>
-          <span>{likes.length} references</span>
-          <span>{recommendations.length} saved days</span>
+        <div className="sidebar-stats" aria-label="Wardrobe summary">
+          <div><strong>{wardrobe.length}</strong><span>items</span></div>
+          <div><strong>{likes.length}</strong><span>references</span></div>
+          <div><strong>{recommendations.length}</strong><span>saved days</span></div>
         </div>
       </aside>
 
       <section className="workspace">
-        <div className="topbar">
-          <span>{status}</span>
-          <span>{settings.location}</span>
-        </div>
+        <header className="topbar">
+          <div>
+            <p className="eyebrow">Personal closet</p>
+            <h2>{viewTitles[view]}</h2>
+          </div>
+          <div className="workspace-meta">
+            <span className="sync-status"><i />{status}</span>
+            <span className="location-pill">{settings.location}</span>
+          </div>
+        </header>
         {view === "today" && (
           <TodayView
             wardrobe={wardrobe}
