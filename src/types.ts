@@ -75,3 +75,26 @@ export type AppSettings = {
   longitude?: number;
   useCurrentLocation?: boolean;
 };
+
+export type AppRole = "user" | "admin";
+
+export type ClothesProfile = {
+  userId: string;
+  email: string;
+  firstSeenAt: string;
+  lastSeenAt: string;
+};
+
+export type AdminSummaryCounts = {
+  users: number;
+  wardrobe: number;
+  likes: number;
+  recommendations: number;
+};
+
+export type AdminUserData = {
+  wardrobe: WardrobeItem[];
+  likes: LikedOutfit[];
+  recommendations: RecommendationRecord[];
+  settings: AppSettings | null;
+};

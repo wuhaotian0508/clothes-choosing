@@ -63,6 +63,7 @@ Vite 会把本地的 `/api` 请求代理到 Express。
 | `VITE_SUPABASE_URL` | 云同步需要 | Supabase 项目 URL |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | 云同步需要 | 浏览器可使用的 Supabase publishable key |
 | `VITE_SUPABASE_ANON_KEY` | 兼容 | 旧项目的 anon key，代码会在没有 publishable key 时使用 |
+| `VITE_REQUIRE_AUTH` | 否 | 设为 `true` 时，未登录用户只能看到 Magic Link 登录门；本地默认 `false` |
 
 示例：
 
@@ -77,6 +78,7 @@ MODEL_API_KEY=
 
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_REQUIRE_AUTH=false
 ```
 
 前端只能使用 publishable/anon key，绝不能把 Supabase secret 或 `service_role` key 放进 `VITE_*` 变量。
@@ -100,14 +102,21 @@ Supabase 配置完成后，可以在 `Settings` 中：
 2. 从邮件中的 Magic Link 返回应用。
 3. 点击 `Sync now`，或让登录事件自动将本地数据同步到云端。
 
+生产环境的 Supabase Auth `Site URL` 应设为 `https://clothes-choosing.vercel.app`。
+Redirect URLs 至少应包含正式域名、`http://localhost:5173/**`，以及受控的 Vercel
+预览域名模式 `https://*-wuhaotian0508s-projects.vercel.app/**`。普通用户可跳过登录；
+只有登录且在 `clothes_user_roles` 中由数据库授予 `admin` 的用户才会看到管理入口。
+
 当前代码使用以下数据表：
 
 - `clothes_wardrobe_items`
 - `clothes_liked_outfits`
 - `clothes_recommendation_records`
 - `clothes_user_settings`
+- `clothes_profiles`
+- `clothes_user_roles`
 
-这些表必须启用 RLS，并按 `user_id = auth.uid()` 限制每位登录用户只能访问自己的记录。当前仓库还没有 Supabase migration 文件，因此从零搭建新项目时需要先补齐数据库迁移。
+这些表必须启用 RLS。普通用户只能访问自己的记录；`clothes_user_roles` 中由数据库授予的管理员可以只读查看所有穿搭数据，但不能修改或删除其他用户内容。`clothes_profiles` 只登记真正登录过穿搭网站的账号，避免混入共享 Supabase 项目的其他用户。当前仓库还没有 Supabase migration 文件，因此从零搭建新项目时需要先补齐数据库迁移。
 
 ## API
 
@@ -141,8 +150,7 @@ npm run preview
 - 最终模型复排目前只收到候选 ID、规则分数、理由和上下文，尚未收到候选衣服图片，因此还不是完整的视觉复选。
 - `seasonTags`、`formalityLevel`、颜色协调、配饰和连衣裙尚未真正进入组合算法。
 - 图片以 Data URL 保存在记录内，适合原型，不适合大量高清图片。
-- Supabase schema 尚未版本化到仓库，云同步需要外部数据库已经完成建表和 RLS。
+- Supabase schema 位于 `supabase/migrations`；部署新项目时应按顺序应用 migration。
 - 暂无 Calendar、Pinterest、Telegram 和购买推荐。
 
 更完整的架构、完成度和下一步建议见 [技术报告](docs/technical-report.md)。
-

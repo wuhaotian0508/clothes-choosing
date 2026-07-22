@@ -1,31 +1,30 @@
 import { Cloud, Crosshair, Download, LogOut, Mail, Save, Upload } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import type { AppSettings } from "../types";
-import { getCloudConfigStatus, getCloudSession, sendMagicLink, signOutCloud } from "../lib/cloudAuth";
+import { useRef, useState } from "react";
+import type { AppRole, AppSettings } from "../types";
+import { getCloudConfigStatus, sendMagicLink, signOutCloud } from "../lib/cloudAuth";
 import { downloadJson, exportBackup, importBackup, syncLocalToCloud } from "../lib/storage";
 
 export default function SettingsView({
   settings,
+  sessionEmail,
+  role,
   onSettingsChange,
-  onChanged
+  onChanged,
+  onOpenAdmin
 }: {
   settings: AppSettings;
+  sessionEmail: string | null;
+  role: AppRole;
   onSettingsChange: (settings: AppSettings) => Promise<void>;
   onChanged: () => Promise<void>;
+  onOpenAdmin: () => void;
 }) {
   const [location, setLocation] = useState(settings.location);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
-  const [sessionEmail, setSessionEmail] = useState<string | null>(null);
   const [cloudMessage, setCloudMessage] = useState("");
   const importRef = useRef<HTMLInputElement>(null);
   const cloudConfigured = getCloudConfigStatus() === "configured";
-
-  useEffect(() => {
-    getCloudSession()
-      .then((session) => setSessionEmail(session?.user.email ?? null))
-      .catch((error) => setCloudMessage(error.message));
-  }, []);
 
   async function handleSave() {
     await onSettingsChange({ location, useCurrentLocation: false });
@@ -87,7 +86,6 @@ export default function SettingsView({
 
   async function handleSignOut() {
     await signOutCloud();
-    setSessionEmail(null);
     setCloudMessage("Signed out");
     await onChanged();
   }
@@ -111,6 +109,63 @@ export default function SettingsView({
         <h2>Settings</h2>
         <span>{message}</span>
       </div>
+      <section className="cloud-account-card" aria-labelledby="cloud-account-title">
+        <div className="cloud-account-heading">
+          <div>
+            <strong id="cloud-account-title">Cloud account</strong>
+            <span>
+              {sessionEmail
+                ? `Signed in as ${sessionEmail}`
+                : "Optional sign-in for cloud sync and administrator access"}
+            </span>
+          </div>
+          {role === "admin" && <span className="admin-access-badge">Administrator</span>}
+        </div>
+        {!sessionEmail && (
+          <div className="cloud-auth-row signed-out-cloud-row">
+            <label className="field">
+              <span>Email</span>
+              <input
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="you@example.com"
+                disabled={!cloudConfigured}
+              />
+            </label>
+            <button
+              className="secondary"
+              onClick={handleSendMagicLink}
+              disabled={!cloudConfigured || !email.trim()}
+            >
+              <Mail size={17} /> Send login link
+            </button>
+          </div>
+        )}
+        {sessionEmail && (
+          <div className="button-row cloud-account-actions">
+            {role === "admin" && (
+              <button onClick={onOpenAdmin}>Open Admin dashboard</button>
+            )}
+            <button className="secondary" onClick={handleCloudSync}>
+              <Cloud size={17} /> Sync now
+            </button>
+            <button className="secondary" onClick={handleSignOut}>
+              <LogOut size={17} /> Sign out
+            </button>
+          </div>
+        )}
+        {!cloudConfigured && <span className="auth-error">Cloud login is not configured.</span>}
+        <div className="privacy-notice compact-privacy-notice">
+          <strong>Cloud privacy notice</strong>
+          <span>
+            Synced photos, style references, recommendation history, and saved precise location can
+            be viewed by this site&apos;s administrator.
+          </span>
+        </div>
+        {cloudMessage && <div className="settings-note compact-note">{cloudMessage}</div>}
+      </section>
       <label className="field">
         <span>Weather location</span>
         <input value={location} onChange={(event) => setLocation(event.target.value)} />
@@ -144,38 +199,6 @@ export default function SettingsView({
             : "Manual city name"}
         </span>
       </div>
-      <div className="settings-note">
-        <strong>Cloud sync</strong>
-        <span>
-          {cloudConfigured
-            ? sessionEmail
-              ? `Signed in as ${sessionEmail}`
-              : "Supabase configured, sign in to sync across browsers"
-            : "Supabase env vars are missing"}
-        </span>
-      </div>
-      <div className="cloud-auth-row">
-        <label className="field">
-          <span>Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder="you@example.com"
-            disabled={!cloudConfigured || Boolean(sessionEmail)}
-          />
-        </label>
-        <button className="secondary" onClick={handleSendMagicLink} disabled={!cloudConfigured || !email || Boolean(sessionEmail)}>
-          <Mail size={17} /> Send link
-        </button>
-        <button className="secondary" onClick={handleCloudSync} disabled={!cloudConfigured || !sessionEmail}>
-          <Cloud size={17} /> Sync now
-        </button>
-        <button className="secondary" onClick={handleSignOut} disabled={!cloudConfigured || !sessionEmail}>
-          <LogOut size={17} /> Sign out
-        </button>
-      </div>
-      {cloudMessage && <div className="settings-note compact-note">{cloudMessage}</div>}
     </section>
   );
 }
